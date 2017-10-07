@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+<h1>Home Page</h1>
+ 
+{% block content %}
+    {% for post in posts %}
+        {{ post.render() | safe }}
+        <br><br>
+    {% endfor %}
+{% endblock%}
