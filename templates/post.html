@@ -1,4 +1,3 @@
-<div>{{ p.title }}</div>
+<div><a href="/{{ p.key().id() }}">{{ p.title }}</a></div>
 <div>{{ p._render_text | safe }}</div>
 <div>{{ p.created.strftime('%b %d, %Y') }}</div>
-<div><a href="/{{ p.key().id() }}">{{ p.key().id() }}</a></div>

@@ -39,6 +39,14 @@ class Posts(db.Model):
         self._render_text = self.content.replace('\n', '<br>')
         return render_str("post.html", p = self)
 
+### Users db Model
+
+class Users(db.Model):
+    user_id = db.StringProperty(required=True)
+    password = db.StringProperty(required=True)
+    email = db.StringProperty()
+    created = db.DateTimeProperty(auto_now_add=True)
+
 #### Blog pages
 
 class Front(Blog):
@@ -76,11 +84,24 @@ class New(Blog):
         else:
             error = "Need to add title and content."
             self.render("newpost.html", title=title, content=content, error=error)
-        
 
+class Login(Blog):
+    def get(self):
+        pass
+
+class Signup(Blog):
+    def get(self):
+        pass
+
+class Logout(Blog):
+    def get(self):
+        pass
 
 app = webapp2.WSGIApplication([
     ('/?', Front),
     ('/([0-9]+)', PostPage),
-    ('/newpost', New)
+    ('/newpost', New),
+    ('/login', Login),
+    ('/signup', Signup),
+    ('/logout', Logout)
 ], debug=True)
