@@ -2,4 +2,79 @@
 
     {% block content %}
         {{ post.render() | safe }}
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <form action="" method="post" class="mt-2">
+                    <button class="btn btn-primary" type="submit"><i class="fa fa-thumbs-up"></i></button>
+                </form>
+                <span><a href="/edit/{{ post.key().id() }}">Edit Post</a></span>
+                <span><a href="/delete/{{ post.key().id() }}">Delete Post</a></span>
+            </div>
+        </div>
+        {% for comment in comments %}  
+            <div class="row">
+                <div class="col-lg-8 mx-auto my-2">
+                    <h3><i class="fa fa-comment"></i> {{ comment.get_user_name() }} says:
+                        <small>{{ comment.created.strftime('%b %d, %Y')}}</small>
+                    </h3>
+                    <p class="lead" name="comment">{{ comment.comment }}</p>
+                    {% if comment.get_user_name() == user.name %}
+                    <div>
+                        <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#editCommentModal_{{comment.key().id()}}"><i class="fa fa-edit"></i>Edit</button>
+                        <form action="/{{post.key().id()}}/deletecomment" id="deletePost" method="POST">
+                            <input type="hidden" name="commentId" value="{{comment.key().id()}}">
+                        </form>
+                        <button type="submit" class="btn btn-danger btn-sm" form="deletePost"><i class="fa fa-trash"></i>Delete</button>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <h4 class="card-title">Leave a Comment:</h4>
+                <form action="/{{post.key().id()}}/newcomment" method="POST">
+                    <div class="form-group">
+                        <textarea type="text" class="form-control" name="content" rows="3" required>{{content}}</textarea>
+                    </div>
+                    <div class="error">{{error}}</div>
+                    <input type="submit" class="btn btn-outline-primary pb-8">
+                </form>
+            </div>
+        </div>
+
+        {% for comment in comments %}
+        <!-- Modal for Editing Comment-->
+        <div class="modal fade" id="editCommentModal_{{comment.key().id()}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">Edit Comment</h4>
+              </div>
+              <div class="modal-body">
+                <form action="/{{post.key().id()}}/editcomment" method="POST" id="editComment">
+                  <div class="form-group row">
+                    <div class="col-sm-10">
+                      <textarea type="text" class="form-control" rows="8" name="editComment">{{comment.comment}}</textarea>
+                      <input type="hidden" name="commentId" value="{{comment.key().id()}}">
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <input type="submit" class="btn btn-primary" name="editComment" value="Save changes">
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+
     {% endblock %}
+
+    
+    

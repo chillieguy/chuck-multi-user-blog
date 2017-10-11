@@ -1,3 +1,20 @@
-<div><a href="/{{ p.key().id() }}">{{ p.title }}</a></div>
-<div>{{ p._render_text | safe }}</div>
-<div>{{ p.created.strftime('%b %d, %Y') }}</div>
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <h1><a href="/{{ p.key().id() }}">{{ p.title }}</a></h1>
+        <p class="lead"><i class="fa fa-user"></i> by {{ p.get_user_name() }}</p>
+        <p><i class="fa fa-calendar"></i>{{ p.created.strftime('%b %d, %Y')}}</p>
+        <div class="lead mb-4">{{ p._render_text | safe }}</div>
+        <div>Likes: {{ p.likes }} 
+            {% if p.liked_by %}
+                <span>| By: 
+                {% for person in p.liked_by %}
+                    <span class="liked-by">
+                        {{ "{} ".format(person) }}
+                    </span>
+                {% endfor%}
+            {% endif %}
+            </span>
+        </div>
+    </div>
+</div>
+

@@ -9,11 +9,11 @@
                 <div class="form-group">
                     Subject:
                     <br>
-                    <input type="text" name="title" value="{{title}}">
+                    <input type="text" name="title" value="{{post.title}}" required>
                     <br>
                     Blog Post:
                     <br>
-                    <textarea type="content" class="form-control" name="content">{{content}}</textarea>
+                    <textarea type="content" class="form-control" name="content" required>{{post.content}}</textarea>
                 </div>
                 <div class="error">{{error}}</div>
                 <input type="submit" class="btn btn-outline-primary pb-8">

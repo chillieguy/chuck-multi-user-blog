@@ -2,19 +2,23 @@
 
 {% block content %}
 
-    <form method="post">
-      <label>
-        <div>User Name</div>
-        <input type="text" name="user_id" value="{{user_id}}">
-      </label>
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <form  class="form-group" method="post">
+            <label>
+                <div>User Name</div>
+                <input class="form-control" type="text" name="username" value="{{user_id}}">
+            </label>
 
-      <label>
-        <div>Password</div>
-        <input type="text" name="password" value="">
-      </label>
+            <label>
+                <div>Password</div>
+                <input class="form-control" type="password" name="password" value="">
+            </label>
 
-      <div class="error">{{error}}</div>
+            <div class="error">{{error}}</div>
 
-      <input type="submit">
-    </form>
+            <input class="btn btn-info" type="submit">
+            </form>
+        </div>
+    </div>
 {% endblock %}
