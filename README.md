@@ -26,3 +26,6 @@ TODO -
 * Split main.py into seperate files/modules by function
 * Complete server side and client side validation of inputs; left incomplete for the assignment
 * Add user roles. Such as admin.
+* Encapsulate helper functions in class
+* Add author as reference property to Posts model
+* Add login decorator
