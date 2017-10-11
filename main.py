@@ -78,25 +78,21 @@ def check_secure_val(secure_val):
 # Regex function helpers to validate input
 
 
-USER_RE = re.compile(r"^[a-zA-Z0-9_-]{3,20}$")
-
-
 def valid_username(username):
     """Return username if valid"""
+    USER_RE = re.compile(r"^[a-zA-Z0-9_-]{3,20}$")
     return username and USER_RE.match(username)
-
-PASS_RE = re.compile(r"^.{3,20}$")
 
 
 def valid_password(password):
     """Return password if vallid"""
+    PASS_RE = re.compile(r"^.{3,20}$")
     return password and PASS_RE.match(password)
-
-EMAIL_RE = re.compile(r'^[\S]+@[\S]+\.[\S]+$')
 
 
 def valid_email(email):
     """Return email if vallid"""
+    EMAIL_RE = re.compile(r'^[\S]+@[\S]+\.[\S]+$')
     return not email or EMAIL_RE.match(email)
 
 # Posts db model
@@ -232,15 +228,17 @@ class PostPage(Blog):
         """Respond to get request"""
         key = db.Key.from_path('Posts', int(post_id), parent=blog_key())
         post = db.get(key)
+        if not post:
+            self.redirect('/')
+
         comments = db.GqlQuery("SELECT * FROM Comment WHERE post_id =" +
                                post_id + "ORDER BY created")
 
-        if not post:
-            self.redirect('/404page')
-            return
-
-        self.render("permalink.html", post=post, user=self.user,
-                    comments=comments)
+        if post:
+            self.render("permalink.html", post=post, user=self.user,
+                        comments=comments)
+        else:
+            self.redirect('/')
 
     def post(self, post_id):
         """Respond to post request"""
@@ -249,8 +247,11 @@ class PostPage(Blog):
         else:
             key = db.Key.from_path('Posts', int(post_id), parent=blog_key())
             post = db.get(key)
-            author = post.get_user_name()
-            user = self.user.name
+            if post:
+                author = post.get_user_name()
+                user = self.user.name
+            else:
+                self.redirect('/')
 
             if author == user or user in post.liked_by:
                 self.redirect("/{}".format(post_id))
@@ -273,8 +274,11 @@ class New(Blog):
 
     def post(self):
         """Respond to post request"""
-        title = self.request.get('title')
-        content = self.request.get('content')
+        if self.user:
+            title = self.request.get('title')
+            content = self.request.get('content')
+        else:
+            self.redirect('/login')
 
         if title and content:
             p = Posts(parent=blog_key(), title=title, content=content,
@@ -397,8 +401,10 @@ class Edit(Blog):
 
         key = db.Key.from_path('Posts', int(post_id), parent=blog_key())
         p = db.get(key)
-        p.title = self.request.get('title')
-        p.content = self.request.get('content')
+
+        if p:
+            p.title = self.request.get('title')
+            p.content = self.request.get('content')
 
         if p.user_id == self.user.key().id():
             if title and content:
@@ -424,7 +430,7 @@ class Delete(Blog):
             key = db.Key.from_path('Posts', int(post_id), parent=blog_key())
             p = db.get(key)
 
-            if p.user_id == self.user.key().id():
+            if p and p.user_id == self.user.key().id():
                 p.delete()
                 time.sleep(.2)
                 self.redirect('/')
