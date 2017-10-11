@@ -418,6 +418,8 @@ class Delete(Blog):
     """Respond to url"""
     def get(self, post_id):
         """Respond to get request"""
+        if not self.user:
+            self.redirect('/login')
         if self.user:
             key = db.Key.from_path('Posts', int(post_id), parent=blog_key())
             p = db.get(key)
@@ -427,7 +429,7 @@ class Delete(Blog):
                 time.sleep(.2)
                 self.redirect('/')
             else:
-                self.redirect('/')
+                self.redirect('/{}'.format(post_id))
 
 
 class NewComment(Blog):
